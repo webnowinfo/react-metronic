@@ -1,0 +1,33 @@
+name: NPM Installation
+
+on:
+  push:
+    branches-ignore:
+      - "dependabot/**"
+  schedule:
+  - cron: '0 0 * * *'
+
+env:
+  FORCE_COLOR: 2
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, windows-latest]
+        node-version: [20.20.2]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Run build
+        run: npm run build
